@@ -12,7 +12,7 @@ const Hero = () => {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:5001/api/settings')
+    axios.get('/api/settings')
       .then(res => setSettings(res.data))
       .catch(err => console.error('Ayarlar yüklenemedi:', err));
   }, []);

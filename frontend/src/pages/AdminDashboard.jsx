@@ -36,14 +36,14 @@ const AdminDashboard = () => {
 
   const fetchNews = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/news');
+      const res = await axios.get('/api/news');
       setNews(res.data);
     } catch (err) { console.error(err); }
   };
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/settings');
+      const res = await axios.get('/api/settings');
       setProfilePhoto(res.data.profilePhoto || '');
       setBio(res.data.bio || '');
       setBio2(res.data.bio2 || '');
@@ -63,12 +63,12 @@ const AdminDashboard = () => {
     const formData = new FormData();
     formData.append('photo', file);
     try {
-      const res = await axios.post('http://localhost:5001/api/upload/profile', formData, {
+      const res = await axios.post('/api/upload/profile', formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       setProfilePhoto(res.data.photoUrl);
       // biyografiyi de kaydet
-      await axios.put('http://localhost:5001/api/settings',
+      await axios.put('/api/settings',
         { profilePhoto: res.data.photoUrl, bio, bio2, bio3, bio4 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
   const handleSaveSettings = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:5001/api/settings',
+      await axios.put('/api/settings',
         { profilePhoto, bio, bio2, bio3, bio4 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -96,7 +96,7 @@ const AdminDashboard = () => {
   const handleAddNews = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/api/news',
+      await axios.post('/api/news',
         { title, content, imageUrl, additionalImages, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const res = await axios.post('http://localhost:5001/api/upload/news-image', formData, {
+      const res = await axios.post('/api/upload/news-image', formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       setImageUrl(res.data.url);
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
     files.forEach(file => formData.append('images', file));
     
     try {
-      const res = await axios.post('http://localhost:5001/api/upload/news-gallery', formData, {
+      const res = await axios.post('/api/upload/news-gallery', formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       setAdditionalImages(res.data.urls);
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Bu haberi silmek istediğinize emin misiniz?')) return;
     try {
-      await axios.delete(`http://localhost:5001/api/news/${id}`, {
+      await axios.delete(`/api/news/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchNews();

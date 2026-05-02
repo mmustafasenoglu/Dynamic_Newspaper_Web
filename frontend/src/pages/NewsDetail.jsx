@@ -8,7 +8,7 @@ const NewsDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:5001/api/news')
+    axios.get('/api/news')
       .then(res => {
         const item = res.data.find(n => n.id.toString() === id);
         setNewsItem(item);

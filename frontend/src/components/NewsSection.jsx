@@ -7,7 +7,7 @@ const NewsSection = () => {
   useEffect(() => {
     // Backend API'den verileri çekeriz.
     // Şimdilik default port: 5000 kabul ediliyor
-    axios.get('http://localhost:5001/api/news')
+    axios.get('/api/news')
       .then(res => {
         // En son 3 haberi al
         setNews(res.data.slice(0, 3));

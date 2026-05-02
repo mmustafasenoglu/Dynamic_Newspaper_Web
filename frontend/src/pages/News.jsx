@@ -6,7 +6,7 @@ const News = () => {
   const [activeCategory, setActiveCategory] = useState('Tümü');
 
   useEffect(() => {
-    axios.get('http://localhost:5001/api/news')
+    axios.get('/api/news')
       .then(res => setNews(res.data))
       .catch(err => console.error("Haberler çekilemedi:", err));
   }, []);
