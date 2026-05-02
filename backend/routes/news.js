@@ -44,7 +44,7 @@ router.get('/', (req, res) => {
 
 // Yeni haber ekle
 router.post('/', verifyToken, (req, res) => {
-    const { title, content, imageUrl } = req.body;
+    const { title, content, imageUrl, additionalImages, category } = req.body;
     if (!title || !content) return res.status(400).json({ message: 'Başlık ve içerik zorunludur.' });
 
     const news = readData();
@@ -52,14 +52,16 @@ router.post('/', verifyToken, (req, res) => {
         id: Date.now().toString(),
         title,
         content,
+        category: category || 'Genel',
         imageUrl: imageUrl || 'https://via.placeholder.com/400x250',
+        additionalImages: additionalImages || [],
         date: new Date().toISOString()
     };
     
     news.unshift(newEntry);
     writeData(news);
     
-    res.status(201).json({ message: 'Haber eklendi', data: newEntry });
+    res.status(201).json({ message: 'Haber eklendi', id: newEntry.id, data: newEntry });
 });
 
 // Haber sil

@@ -39,6 +39,19 @@ const upload = multer({
   }
 });
 
+// Haber Görseli Yükleme
+const newsStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads')),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `news-${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`);
+  }
+});
+const uploadNews = multer({
+  storage: newsStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
+});
+
 // JWT Middleware
 const verifyToken = (req, res, next) => {
   const token = req.headers['authorization'];
@@ -70,10 +83,24 @@ app.post('/api/upload/profile', verifyToken, upload.single('photo'), (req, res) 
   }
 });
 
+// Haber tekli görsel yükleme (Ana Görsel)
+app.post('/api/upload/news-image', verifyToken, uploadNews.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ message: 'Dosya yüklenmedi.' });
+  const photoUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+  res.json({ url: photoUrl });
+});
+
+// Haber çoklu görsel yükleme (Galeri, max 20)
+app.post('/api/upload/news-gallery', verifyToken, uploadNews.array('images', 20), (req, res) => {
+  if (!req.files || req.files.length === 0) return res.status(400).json({ message: 'Dosya yüklenmedi.' });
+  const urls = req.files.map(file => `http://localhost:${PORT}/uploads/${file.filename}`);
+  res.json({ urls });
+});
+
 // Basit Admin Girişi
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
-  if (username === 'admin' && password === '123456') {
+  if (username === 'Ferittercan' && password === 'ferit06.06') {
     const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '1d' });
     return res.json({ token, message: 'Giriş başarılı' });
   }

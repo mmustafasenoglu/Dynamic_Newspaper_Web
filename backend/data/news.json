@@ -1,8 +1,23 @@
 [
   {
+    "id": "1777754272127",
+    "title": "Otomatik Test Haberi",
+    "content": "Bu haber test scripti tarafından oluşturuldu. Silinecektir.",
+    "imageUrl": "https://via.placeholder.com/150",
+    "date": "2026-05-02T20:37:52.127Z"
+  },
+  {
+    "id": "1777754250458",
+    "title": "Otomatik Test Haberi",
+    "content": "Bu haber test scripti tarafından oluşturuldu. Silinecektir.",
+    "imageUrl": "https://via.placeholder.com/150",
+    "date": "2026-05-02T20:37:30.458Z"
+  },
+  {
     "id": "1712850000000",
     "title": "Yeni Teknolojilere Adaptasyon Süreci",
     "content": "Dijital dönüşüm her geçen gün iş yapış şeklimizi değiştiriyor. Ferit Tercan olarak bu sürece nasıl ayak uyduracağımızı anlattık.",
+    "category": "Teknoloji",
     "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     "date": "2024-04-11T16:00:00.000Z"
   },
@@ -10,6 +25,7 @@
     "id": "1712800000000",
     "title": "Sektörde 5. Yıl",
     "content": "Sektördeki 5. yılımızı kutlarken, bana destek olan herkese teşekkür ederim. Gelecek projelerimiz hakkında ipuçları paylaştık.",
+    "category": "Kariyer",
     "imageUrl": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     "date": "2024-04-10T12:00:00.000Z"
   },
@@ -17,6 +33,7 @@
     "id": "1712750000000",
     "title": "Frontend Trendleri 2024",
     "content": "2024 yılında frontend dünyasında beklenen gelişmeler ve benim kullanmayı en çok sevdiğim kütüphaneler üzerine bir derleme.",
+    "category": "Yazılım",
     "imageUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     "date": "2024-04-09T08:00:00.000Z"
   }

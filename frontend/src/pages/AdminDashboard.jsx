@@ -7,12 +7,19 @@ const AdminDashboard = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [additionalImages, setAdditionalImages] = useState([]);
+  const [category, setCategory] = useState('Genel');
+
+  // Yükleme stateleri
+  const [newsImageUploading, setNewsImageUploading] = useState(false);
+  const [galleryUploading, setGalleryUploading] = useState(false);
 
   // Profil ayarları
   const [profilePhoto, setProfilePhoto] = useState('');
   const [bio, setBio] = useState('');
   const [bio2, setBio2] = useState('');
   const [bio3, setBio3] = useState('');
+  const [bio4, setBio4] = useState('');
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState('');
@@ -41,6 +48,7 @@ const AdminDashboard = () => {
       setBio(res.data.bio || '');
       setBio2(res.data.bio2 || '');
       setBio3(res.data.bio3 || '');
+      setBio4(res.data.bio4 || '');
     } catch (err) { console.error(err); }
   };
 
@@ -61,7 +69,7 @@ const AdminDashboard = () => {
       setProfilePhoto(res.data.photoUrl);
       // biyografiyi de kaydet
       await axios.put('http://localhost:5001/api/settings',
-        { profilePhoto: res.data.photoUrl, bio, bio2, bio3 },
+        { profilePhoto: res.data.photoUrl, bio, bio2, bio3, bio4 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSettingsSaved(true);
@@ -77,7 +85,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       await axios.put('http://localhost:5001/api/settings',
-        { profilePhoto, bio, bio2, bio3 },
+        { profilePhoto, bio, bio2, bio3, bio4 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSettingsSaved(true);
@@ -89,12 +97,53 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       await axios.post('http://localhost:5001/api/news',
-        { title, content, imageUrl },
+        { title, content, imageUrl, additionalImages, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTitle(''); setContent(''); setImageUrl('');
+      setTitle(''); setContent(''); setImageUrl(''); setAdditionalImages([]); setCategory('Genel');
       fetchNews();
     } catch (err) { console.error('Haber eklenemedi.', err); }
+  };
+
+  const handleNewsImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setNewsImageUploading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await axios.post('http://localhost:5001/api/upload/news-image', formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      setImageUrl(res.data.url);
+    } catch (err) {
+      alert('Ana görsel yüklenemedi.');
+    } finally {
+      setNewsImageUploading(false);
+    }
+  };
+
+  const handleGalleryUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    if (files.length > 20) {
+      alert('Maksimum 20 görsel yükleyebilirsiniz.');
+      return;
+    }
+    setGalleryUploading(true);
+    const formData = new FormData();
+    files.forEach(file => formData.append('images', file));
+    
+    try {
+      const res = await axios.post('http://localhost:5001/api/upload/news-gallery', formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      setAdditionalImages(res.data.urls);
+    } catch (err) {
+      alert('Galeri görselleri yüklenemedi.');
+    } finally {
+      setGalleryUploading(false);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -174,7 +223,7 @@ const AdminDashboard = () => {
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow">
                   {profilePhoto ? (
-                    <img src={profilePhoto} alt="Önizleme" className="w-full h-full object-cover"
+                    <img src={profilePhoto} alt="Önizleme" className="w-full h-full object-cover object-top"
                       onError={e => { e.target.src = 'https://via.placeholder.com/128'; }} />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs text-center p-2">Önizleme</div>
@@ -195,6 +244,10 @@ const AdminDashboard = () => {
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">Biyografi 3. Paragraf</label>
               <textarea className="w-full p-3 border rounded-lg focus:outline-none focus:border-blue-500 h-20" value={bio3} onChange={e => setBio3(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">Biyografi 4. Paragraf</label>
+              <textarea className="w-full p-3 border rounded-lg focus:outline-none focus:border-blue-500 h-20" value={bio4} onChange={e => setBio4(e.target.value)} />
             </div>
 
             <div className="flex items-center gap-4">
@@ -217,12 +270,46 @@ const AdminDashboard = () => {
                 <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={title} onChange={e => setTitle(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Görsel URL</label>
-                <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={imageUrl} onChange={e => setImageUrl(e.target.value)} />
+                <label className="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
+                <select className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={category} onChange={e => setCategory(e.target.value)}>
+                  <option value="Teknoloji">Teknoloji</option>
+                  <option value="Yazılım">Yazılım</option>
+                  <option value="Kariyer">Kariyer</option>
+                  <option value="Genel">Genel</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ana Görsel (URL veya Yükle)</label>
+                <div className="flex gap-2 items-center">
+                  <input type="text" placeholder="Görsel URL'si girin veya yanda yükleyin" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={imageUrl} onChange={e => setImageUrl(e.target.value)} />
+                  <label className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded cursor-pointer transition flex-shrink-0 font-bold text-sm flex items-center gap-2">
+                    {newsImageUploading ? 'Yükleniyor...' : '⬆️ Yükle'}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleNewsImageUpload} />
+                  </label>
+                </div>
+                {imageUrl && <img src={imageUrl} alt="Önizleme" className="mt-2 h-24 object-cover rounded shadow" />}
               </div>
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">İçerik</label>
                 <textarea className="w-full p-2 border rounded focus:outline-none focus:border-blue-500 h-32" value={content} onChange={e => setContent(e.target.value)} required></textarea>
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller (Maks 20 - Haber İçeriği Altı İçin)</label>
+                <label className="block w-full border-2 border-dashed border-gray-300 hover:border-blue-400 bg-gray-50 hover:bg-blue-50 text-center p-4 rounded cursor-pointer transition">
+                  <span className="text-gray-600 font-bold text-sm">
+                    {galleryUploading ? 'Yükleniyor...' : '🖼️ Birden Fazla Görsel Seç ve Yükle'}
+                  </span>
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryUpload} />
+                </label>
+                {additionalImages.length > 0 && (
+                  <div className="mt-3 grid grid-cols-4 sm:grid-cols-5 gap-2">
+                    {additionalImages.map((img, i) => (
+                      <div key={i} className="relative aspect-square">
+                        <img src={img} alt="Galeri" className="w-full h-full object-cover rounded shadow-sm border" />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <button type="submit" className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
                 Kaydet

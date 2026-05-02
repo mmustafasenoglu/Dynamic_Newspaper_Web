@@ -1,7 +1,8 @@
 {
-  "profilePhoto": "https://images.unsplash.com/photo-1556157382-97eda2d62296?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "profilePhoto": "http://localhost:5001/uploads/profile-1777752231906.png",
   "name": "Ferit Tercan",
-  "bio": "Merhaba, ben Ferit Tercan. Yenilikçi ve çözüm odaklı ürünler geliştiren bir Full-Stack Geliştiriciyim.",
-  "bio2": "Teknoloji dünyasındaki gelişmeleri yakından takip ederek, modern web mimarileri (React, Node.js) üzerinden ölçeklenebilir ve yüksek performanslı uygulamalar üretiyorum.",
-  "bio3": "Yazılım geliştirme sürecini sadece kod yazmak olarak değil, kullanıcıya değer katan bir hizmet olarak görüyorum. Bu vizyonla, her projede sürdürülebilirlik, hız ve etkili hikaye anlatımını merkeze koyuyorum."
+  "bio": "Gazeteciliğe olan ilgim, olayların merkezinde olup doğru ve etkili bilgi aktarmaya duyduğum tutkudan geliyor. Aydın Adnan Menderes Üniversitesi Gazetecilik bölümünden mezun olduktan sonra bu tutkuyu bir adım öteye taşıyarak sahada aktif görev almaya başladım.",
+  "bio2": "Haber takibi, röportaj yapma ve saha gazeteciliği konularında kendimi sürekli geliştirmeye devam ediyorum. Teorik bilgiden çok, pratik yaparak öğrenmeye inanıyorum; bu yüzden kameralar ve mikrofonlar önünde değil, olayların tam ortasında olmayı tercih ediyorum.",
+  "bio3": "Kendimi geliştirmeye açık, meraklı ve öğrenmeye hevesli bir gazeteci olarak kendi kişisel haberlerimi ve içeriklerimi oluşturuyorum. Bağımsız bir bakış açısıyla ürettiğim haberler, okuyucuya doğrudan ve yalın bir dille ulaşmayı hedefliyor.",
+  "bio4": "Medya sektöründe aktif olarak yer almak için çalışıyor; her geçen gün daha güçlü bir ses olmaya, daha etkili haberler üretmeye devam ediyorum."
 }
