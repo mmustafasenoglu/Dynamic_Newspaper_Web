@@ -127,11 +127,10 @@ app.post('/api/login', (req, res) => {
   return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5001;
-  app.listen(PORT, () => {
-    console.log(`Backend sunucusu http://localhost:${PORT} üzerinde çalışıyor.`);
-  });
-}
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Backend sunucusu http://localhost:${PORT} üzerinde çalışıyor.`);
+});
 
 module.exports = app;
+
