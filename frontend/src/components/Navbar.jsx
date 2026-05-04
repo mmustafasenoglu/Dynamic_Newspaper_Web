@@ -7,6 +7,7 @@ const Navbar = () => {
 
   // Route değiştiğinde mobil menüyü otomatik kapat
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
   }, [location]);
 

@@ -77,7 +77,7 @@ const AdminDashboard = () => {
       );
       setSettingsSaved(true);
       setTimeout(() => setSettingsSaved(false), 3000);
-    } catch (err) {
+    } catch {
       setPhotoError('Yükleme başarısız. Tekrar deneyin.');
     } finally {
       setPhotoUploading(false);
@@ -119,7 +119,7 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       setImageUrl(res.data.url);
-    } catch (err) {
+    } catch {
       alert('Ana görsel yüklenemedi.');
     } finally {
       setNewsImageUploading(false);
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       setAdditionalImages(res.data.urls);
-    } catch (err) {
+    } catch {
       alert('Galeri görselleri yüklenemedi.');
     } finally {
       setGalleryUploading(false);

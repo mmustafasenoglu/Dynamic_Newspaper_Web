@@ -14,8 +14,8 @@ const AdminLogin = () => {
       const res = await axios.post('/api/login', { username, password });
       localStorage.setItem('token', res.data.token);
       navigate('/admin/dashboard');
-    } catch (err) {
-      setError('Geçersiz kullanıcı adı veya şifre.');
+    } catch {
+      setError('Giriş başarısız. Bilgileri kontrol edin.');
     }
   };
 
