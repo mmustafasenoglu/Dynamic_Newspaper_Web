@@ -14,6 +14,8 @@ const newsRoutes = require('./routes/news');
 const app = express();
 app.use(cors({
   origin: [
+    'https://ferittercan.com',
+    'https://www.ferittercan.com',
     'https://lastik-ferit-haber.vercel.app',
     'http://localhost:5173',
     'http://localhost:3000'
