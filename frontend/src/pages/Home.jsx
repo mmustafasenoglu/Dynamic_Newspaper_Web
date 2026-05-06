@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const Home = () => {
+  useDocumentTitle('Ana Sayfa');
   const [news, setNews] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const News = () => {
+  useDocumentTitle('Haberler');
   const [news, setNews] = useState([]);
   const [activeCategory, setActiveCategory] = useState('Tümü');
 

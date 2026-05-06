@@ -1,6 +1,8 @@
 import React from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const Contact = () => {
+  useDocumentTitle('İletişim');
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center bg-gray-50 px-6 py-20">
       <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-10 md:p-16 text-center border-t-8 border-red-600">

@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const NewsDetail = () => {
   const { id } = useParams();
   const [newsItem, setNewsItem] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useDocumentTitle(newsItem ? newsItem.title : 'Haber Detay');
 
   useEffect(() => {
     axios.get('/api/news')

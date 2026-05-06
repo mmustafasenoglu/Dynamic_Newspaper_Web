@@ -3,8 +3,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const AdminDashboard = () => {
+  useDocumentTitle('Yönetim Paneli');
   const [news, setNews] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
