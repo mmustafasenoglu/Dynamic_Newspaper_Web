@@ -51,6 +51,22 @@ router.post('/', verifyToken, async (req, res) => {
     }
 });
 
+// Haber güncelle
+router.put('/:id', verifyToken, async (req, res) => {
+    const { title, content, imageUrl, imageCaption, additionalImages, category } = req.body;
+    try {
+        const updated = await News.findByIdAndUpdate(
+            req.params.id,
+            { title, content, imageUrl, imageCaption, additionalImages, category },
+            { new: true }
+        );
+        if (!updated) return res.status(404).json({ message: 'Haber bulunamadı.' });
+        res.json({ message: 'Haber güncellendi.', data: updated });
+    } catch (err) {
+        res.status(500).json({ message: 'Güncelleme başarısız.' });
+    }
+});
+
 // Haber sil
 router.delete('/:id', verifyToken, async (req, res) => {
     try {

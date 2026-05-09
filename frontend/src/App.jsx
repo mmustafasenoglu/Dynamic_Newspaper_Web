@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Hero from './components/Hero';
 import Home from './pages/Home';
 import News from './pages/News';
@@ -19,6 +20,7 @@ function App() {
               <div className="flex-grow">
                 <Home />
               </div>
+              <Footer />
             </>
           } />
           
@@ -28,6 +30,7 @@ function App() {
               <div className="flex-grow">
                 <News />
               </div>
+              <Footer />
             </>
           } />
 
@@ -37,6 +40,7 @@ function App() {
               <div className="flex-grow">
                 <NewsDetail />
               </div>
+              <Footer />
             </>
           } />
 
@@ -46,6 +50,7 @@ function App() {
               <div className="flex-grow">
                 <Hero />
               </div>
+              <Footer />
             </>
           } />
 
@@ -55,6 +60,7 @@ function App() {
               <div className="flex-grow">
                 <Contact />
               </div>
+              <Footer />
             </>
           } />
 

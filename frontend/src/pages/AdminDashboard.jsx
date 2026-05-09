@@ -13,11 +13,20 @@ const AdminDashboard = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageCaption, setImageCaption] = useState('');
   const [additionalImages, setAdditionalImages] = useState([]);
-  const [category, setCategory] = useState('Genel');
+  const [category, setCategory] = useState('Sağlık');
 
   // Yükleme stateleri
   const [newsImageUploading, setNewsImageUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
+
+  // Düzenleme modal state
+  const [editingNews, setEditingNews] = useState(null); // null = kapalı
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [editImageUrl, setEditImageUrl] = useState('');
+  const [editImageCaption, setEditImageCaption] = useState('');
+  const [editCategory, setEditCategory] = useState('Sağlık');
+  const [editSaving, setEditSaving] = useState(false);
 
   // Profil ayarları
   const [profilePhoto, setProfilePhoto] = useState('');
@@ -105,7 +114,7 @@ const AdminDashboard = () => {
         { title, content, imageUrl, imageCaption, additionalImages, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTitle(''); setContent(''); setImageUrl(''); setImageCaption(''); setAdditionalImages([]); setCategory('Genel');
+      setTitle(''); setContent(''); setImageUrl(''); setImageCaption(''); setAdditionalImages([]); setCategory('Sağlık');
       fetchNews();
     } catch (err) { console.error('Haber eklenemedi.', err); }
   };
@@ -159,6 +168,29 @@ const AdminDashboard = () => {
       });
       fetchNews();
     } catch (err) { console.error('Silme hatası.', err); }
+  };
+
+  const handleEdit = (item) => {
+    setEditingNews(item);
+    setEditTitle(item.title);
+    setEditContent(item.content);
+    setEditImageUrl(item.imageUrl || '');
+    setEditImageCaption(item.imageCaption || '');
+    setEditCategory(item.category || 'Sağlık');
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setEditSaving(true);
+    try {
+      await axios.put(`/api/news/${editingNews.id}`,
+        { title: editTitle, content: editContent, imageUrl: editImageUrl, imageCaption: editImageCaption, category: editCategory, additionalImages: editingNews.additionalImages || [] },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEditingNews(null);
+      fetchNews();
+    } catch (err) { console.error('Güncelleme hatası.', err); }
+    finally { setEditSaving(false); }
   };
 
   const handleLogout = () => {
@@ -277,10 +309,13 @@ const AdminDashboard = () => {
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
                 <select className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={category} onChange={e => setCategory(e.target.value)}>
-                  <option value="Teknoloji">Teknoloji</option>
-                  <option value="Yazılım">Yazılım</option>
-                  <option value="Kariyer">Kariyer</option>
-                  <option value="Genel">Genel</option>
+                  <option value="Sağlık">Sağlık</option>
+                  <option value="Eğitim">Eğitim</option>
+                  <option value="Ekonomi">Ekonomi</option>
+                  <option value="Kültür-Sanat">Kültür-Sanat</option>
+                  <option value="Röportaj">Röportaj</option>
+                  <option value="Yerel Haber">Yerel Haber</option>
+                  <option value="Yaşam">Yaşam</option>
                 </select>
               </div>
               <div>
@@ -340,12 +375,17 @@ const AdminDashboard = () => {
                     )}
                     <div>
                       <h3 className="font-bold text-lg text-primary">{item.title}</h3>
-                      <p className="text-sm text-gray-500">{new Date(item.date).toLocaleDateString('tr-TR')}</p>
+                      <p className="text-sm text-gray-400">{item.category} · {new Date(item.date).toLocaleDateString('tr-TR')}</p>
                     </div>
                   </div>
-                  <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded hover:bg-red-50 transition">
-                    Sil
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800 font-bold px-3 py-1 rounded hover:bg-blue-50 transition">
+                      Düzenle
+                    </button>
+                    <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded hover:bg-red-50 transition">
+                      Sil
+                    </button>
+                  </div>
                 </div>
               ))}
               {news.length === 0 && <p className="text-gray-500 text-center py-8">Henüz haber eklenmemiş.</p>}
@@ -353,6 +393,59 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* ===== DÜZENLEME MODALI ===== */}
+      {editingNews && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setEditingNews(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-800">✏️ Haber Düzenle</h2>
+              <button onClick={() => setEditingNews(null)} className="text-gray-400 hover:text-gray-700 text-2xl font-bold">×</button>
+            </div>
+            <form onSubmit={handleUpdate} className="p-6 space-y-4">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Başlık</label>
+                <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editTitle} onChange={e => setEditTitle(e.target.value)} required />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
+                <select className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editCategory} onChange={e => setEditCategory(e.target.value)}>
+                  <option value="Sağlık">Sağlık</option>
+                  <option value="Eğitim">Eğitim</option>
+                  <option value="Ekonomi">Ekonomi</option>
+                  <option value="Kültür-Sanat">Kültür-Sanat</option>
+                  <option value="Röportaj">Röportaj</option>
+                  <option value="Yerel Haber">Yerel Haber</option>
+                  <option value="Yaşam">Yaşam</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ana Görsel URL</label>
+                <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editImageUrl} onChange={e => setEditImageUrl(e.target.value)} />
+                {editImageUrl && <img src={editImageUrl} alt="Önizleme" className="mt-2 h-24 object-cover rounded shadow" />}
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Görsel Alt Yazısı</label>
+                <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editImageCaption} onChange={e => setEditImageCaption(e.target.value)} />
+              </div>
+              <div className="mb-16 pb-10">
+                <label className="block text-gray-700 text-sm font-bold mb-2">İçerik</label>
+                <div className="h-48 mb-6">
+                  <ReactQuill theme="snow" value={editContent} onChange={setEditContent} className="h-full" />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="submit" disabled={editSaving} className="flex-1 bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-60 transition">
+                  {editSaving ? 'Kaydediliyor...' : '💾 Kaydet'}
+                </button>
+                <button type="button" onClick={() => setEditingNews(null)} className="flex-1 bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-300 transition">
+                  İptal
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

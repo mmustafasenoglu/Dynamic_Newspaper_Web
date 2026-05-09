@@ -14,8 +14,21 @@ const Navbar = () => {
   return (
     <nav className="w-full bg-white text-red-600 px-6 md:px-8 py-5 flex justify-between items-center shadow-sm sticky top-0 z-40">
       <div className="flex items-center gap-2 relative z-50">
-        <Link to="/" className="font-extrabold text-3xl md:text-4xl tracking-tighter hover:text-red-800 transition">FT</Link>
-        <Link to="/" className="font-bold text-xl md:text-2xl ml-2 tracking-wide hidden sm:block hover:text-red-800 transition">Ferit Tercan</Link>
+        <Link to="/" className="flex items-center gap-4 group">
+          {/* F/T Logo */}
+          <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <circle cx="50" cy="50" r="46" fill="white" stroke="#1a1a2e" strokeWidth="3"/>
+            <text textAnchor="middle" x="28" y="66" fontFamily="Georgia, serif" fontSize="46" fontWeight="bold" fill="#1a1a2e">F</text>
+            <text textAnchor="middle" x="50" y="66" fontFamily="Georgia, serif" fontSize="38" fontWeight="400" fill="#c0392b">/</text>
+            <text textAnchor="middle" x="73" y="66" fontFamily="Georgia, serif" fontSize="46" fontWeight="bold" fill="#1a1a2e">T</text>
+          </svg>
+          
+          <div className="flex items-center font-serif text-2xl md:text-3xl tracking-[0.1em] font-black text-[#1a1a2e] uppercase hidden sm:flex">
+            <span>FERIT</span>
+            <span className="mx-2 text-red-600 font-light">/</span>
+            <span>TERCAN</span>
+          </div>
+        </Link>
       </div>
 
       {/* Masaüstü Menü */}
