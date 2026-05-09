@@ -57,3 +57,27 @@ html, body {
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="ubuntu"]::before { content: 'Ubuntu'; font-family: 'Ubuntu'; }
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="inter"]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="inter"]::before { content: 'Inter'; font-family: 'Inter'; }
+
+/* Custom Quill Editor Styles for Dashboard */
+.custom-quill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.custom-quill .ql-toolbar {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background-color: #f9fafb;
+}
+.custom-quill .ql-container {
+  border: none !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  font-size: 1.05rem;
+}
+.custom-quill .ql-editor {
+  padding: 1.5rem;
+  line-height: 1.7;
+}

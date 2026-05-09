@@ -365,9 +365,11 @@ const AdminDashboard = () => {
                 <label className="block text-gray-700 text-sm font-bold mb-2">Ana Görsel Alt Yazısı (Opsiyonel)</label>
                 <input type="text" placeholder="Röportaj yapılan kişinin adı, soyadı vb." className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={imageCaption} onChange={e => setImageCaption(e.target.value)} />
               </div>
-              <div className="mb-12">
+              <div className="mb-24">
                 <label className="block text-gray-700 text-sm font-bold mb-2">İçerik</label>
-                <ReactQuill theme="snow" value={content} onChange={setContent} modules={modules} className="h-64" />
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm h-[500px]">
+                  <ReactQuill theme="snow" value={content} onChange={setContent} modules={modules} className="h-full custom-quill" />
+                </div>
               </div>
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller (Maks 20 - Haber İçeriği Altı İçin)</label>
@@ -466,10 +468,10 @@ const AdminDashboard = () => {
                 <label className="block text-gray-700 text-sm font-bold mb-2">Görsel Alt Yazısı</label>
                 <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editImageCaption} onChange={e => setEditImageCaption(e.target.value)} />
               </div>
-              <div className="pb-12 border-b border-gray-100">
+              <div className="pb-24 border-b border-gray-100">
                 <label className="block text-gray-700 text-sm font-bold mb-2 text-blue-600">İçerik</label>
-                <div className="h-72">
-                  <ReactQuill theme="snow" value={editContent} onChange={setEditContent} modules={modules} className="h-full" />
+                <div className="h-[500px] bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                  <ReactQuill theme="snow" value={editContent} onChange={setEditContent} modules={modules} className="h-full custom-quill" />
                 </div>
               </div>
               <div className="pt-4">

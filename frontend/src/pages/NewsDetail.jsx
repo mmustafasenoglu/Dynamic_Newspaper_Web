@@ -61,7 +61,7 @@ const NewsDetail = () => {
             </h1>
             
             <div 
-              className="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-12 whitespace-normal
+              className="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-12 whitespace-pre-wrap break-words
                 prose-p:font-medium prose-p:text-gray-800 prose-p:mb-6 
                 prose-headings:text-gray-900 prose-headings:font-serif prose-headings:mb-4
                 prose-strong:font-bold prose-strong:text-black"
