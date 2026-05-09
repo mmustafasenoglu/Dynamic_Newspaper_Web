@@ -84,7 +84,6 @@ const NewsDetail = () => {
                   </div>
                 )}
               </div>
-              </div>
             )}
           </div>
         </div>
