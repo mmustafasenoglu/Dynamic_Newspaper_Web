@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill-new';
+import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import useDocumentTitle from '../hooks/useDocumentTitle';
+
+// Fontları Quill'e kaydet
+const Font = Quill.import('formats/font');
+Font.whitelist = [
+  'roboto', 'opensans', 'montserrat', 'playfair', 
+  'poppins', 'lato', 'merriweather', 'ubuntu', 'inter'
+];
+Quill.register(Font, true);
 
 const AdminDashboard = () => {
   useDocumentTitle('Yönetim Paneli');
@@ -46,6 +54,20 @@ const AdminDashboard = () => {
   const [photoUploading, setPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState('');
   const [dragOver, setDragOver] = useState(false);
+
+  // Quill Modülleri
+  const modules = {
+    toolbar: [
+      [{ 'font': Font.whitelist }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['clean']
+    ],
+  };
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -376,8 +398,8 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-64 mb-12">
-                    <ReactQuill theme="snow" value={content} onChange={setContent} className="h-full" />
+                  <div className="mb-12">
+                    <ReactQuill theme="snow" value={content} onChange={setContent} modules={modules} className="h-64" />
                   </div>
                 )}
               </div>
@@ -506,8 +528,8 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-64 mb-12">
-                    <ReactQuill theme="snow" value={editContent} onChange={setEditContent} className="h-full" />
+                  <div className="mb-12">
+                    <ReactQuill theme="snow" value={editContent} onChange={setEditContent} modules={modules} className="h-64" />
                   </div>
                 )}
               </div>
