@@ -24,6 +24,12 @@ const Home = () => {
 
   const popularNews = news.slice(0, 3); // Son 3 haber slider'da gösterilsin
 
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 pt-12">
       <div className="max-w-6xl mx-auto px-6">
@@ -43,7 +49,7 @@ const Home = () => {
                     {item.category || 'Genel'}
                   </span>
                   <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 leading-tight">{item.title}</h2>
-                  <p className="text-gray-200 line-clamp-2 md:w-2/3 text-lg">{item.content}</p>
+                  <p className="text-gray-200 line-clamp-2 md:w-2/3 text-lg">{stripHtml(item.content)}</p>
                 </div>
               </div>
             ))}
@@ -89,7 +95,7 @@ const Home = () => {
                       {new Date(item.date).toLocaleDateString('tr-TR')}
                     </div>
                     <h4 className="text-xl font-bold text-[#1e3a8a] mb-3 leading-snug hover:text-red-600 transition-colors cursor-pointer">{item.title}</h4>
-                    <p className="text-gray-900 font-semibold line-clamp-3 mb-6 flex-grow">{item.content}</p>
+                    <p className="text-gray-900 font-semibold line-clamp-3 mb-6 flex-grow">{stripHtml(item.content)}</p>
                     <a href={`/haber/${item.id}`} className="text-gray-500 font-bold text-sm uppercase tracking-wider hover:text-red-600 transition text-left mt-auto">
                       Devamını Oku &rarr;
                     </a>

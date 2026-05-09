@@ -18,6 +18,12 @@ const News = () => {
   const filteredNews = activeCategory === 'Tümü' 
     ? news 
     : news.filter(item => (item.category || 'Genel') === activeCategory);
+    
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 pt-12">
@@ -61,7 +67,7 @@ const News = () => {
                     {new Date(item.date).toLocaleDateString('tr-TR')}
                   </div>
                   <h4 className="text-xl font-bold text-primary mb-3 leading-snug">{item.title}</h4>
-                  <p className="text-gray-900 font-semibold line-clamp-3 mb-6 flex-grow">{item.content}</p>
+                  <p className="text-gray-900 font-semibold line-clamp-3 mb-6 flex-grow">{stripHtml(item.content)}</p>
                   <a href={`/haber/${item.id}`} className="text-accent font-bold text-sm uppercase tracking-wider hover:text-blue-800 transition text-left mt-auto block">
                     Devamını Oku &rarr;
                   </a>

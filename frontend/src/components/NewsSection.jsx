@@ -15,6 +15,12 @@ const NewsSection = () => {
       .catch(err => console.error("Haberler çekilemedi:", err));
   }, []);
 
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
   return (
     <section id="news" className="py-24 px-8 md:px-24 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -32,7 +38,7 @@ const NewsSection = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-primary mb-4 leading-tight">{item.title}</h3>
                 <p className="text-gray-600 line-clamp-3">
-                  {item.content}
+                  {stripHtml(item.content)}
                 </p>
                 <div className="mt-6">
                   <button className="text-primary font-bold text-sm uppercase tracking-wider hover:text-blue-700 transition">Devamını Oku &rarr;</button>
