@@ -78,6 +78,12 @@ const NewsDetail = () => {
                     </a>
                   ))}
                 </div>
+                {newsItem.galleryCaption && (
+                  <div className="mt-4 text-sm text-gray-500 italic text-center">
+                    {newsItem.galleryCaption}
+                  </div>
+                )}
+              </div>
               </div>
             )}
           </div>

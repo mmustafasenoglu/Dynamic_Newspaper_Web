@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageCaption, setImageCaption] = useState('');
   const [additionalImages, setAdditionalImages] = useState([]);
+  const [galleryCaption, setGalleryCaption] = useState('');
   const [category, setCategory] = useState('Sağlık');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
@@ -27,6 +28,7 @@ const AdminDashboard = () => {
   const [editImageUrl, setEditImageUrl] = useState('');
   const [editImageCaption, setEditImageCaption] = useState('');
   const [editCategory, setEditCategory] = useState('Sağlık');
+  const [editGalleryCaption, setEditGalleryCaption] = useState('');
   const [editDate, setEditDate] = useState('');
   const [editSaving, setEditSaving] = useState(false);
 
@@ -117,10 +119,10 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       await axios.post('/api/news',
-        { title, content, imageUrl, imageCaption, additionalImages, category, date },
+        { title, content, imageUrl, imageCaption, additionalImages, galleryCaption, category, date },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTitle(''); setContent(''); setImageUrl(''); setImageCaption(''); setAdditionalImages([]); setCategory('Sağlık'); setDate(new Date().toISOString().split('T')[0]);
+      setTitle(''); setContent(''); setImageUrl(''); setImageCaption(''); setAdditionalImages([]); setGalleryCaption(''); setCategory('Sağlık'); setDate(new Date().toISOString().split('T')[0]);
       fetchNews();
     } catch (err) { console.error('Haber eklenemedi.', err); }
   };
@@ -183,6 +185,7 @@ const AdminDashboard = () => {
     setEditImageUrl(item.imageUrl || '');
     setEditImageCaption(item.imageCaption || '');
     setEditCategory(item.category || 'Sağlık');
+    setEditGalleryCaption(item.galleryCaption || '');
     setEditDate(new Date(item.date).toISOString().split('T')[0]);
   };
 
@@ -191,7 +194,7 @@ const AdminDashboard = () => {
     setEditSaving(true);
     try {
       await axios.put(`/api/news/${editingNews.id}`,
-        { title: editTitle, content: editContent, imageUrl: editImageUrl, imageCaption: editImageCaption, category: editCategory, date: editDate, additionalImages: editingNews.additionalImages || [] },
+        { title: editTitle, content: editContent, imageUrl: editImageUrl, imageCaption: editImageCaption, category: editCategory, date: editDate, galleryCaption: editGalleryCaption, additionalImages: editingNews.additionalImages || [] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEditingNews(null);
@@ -396,6 +399,10 @@ const AdminDashboard = () => {
                   </div>
                 )}
               </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller Alt Yazısı (Bilgi/Fotoğrafçı)</label>
+                <input type="text" placeholder="Fotoğraflar hakkında bilgi veya çekim yapan kişi..." className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={galleryCaption} onChange={e => setGalleryCaption(e.target.value)} />
+              </div>
               <button type="submit" className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
                 Kaydet
               </button>
@@ -503,6 +510,10 @@ const AdminDashboard = () => {
                     <ReactQuill theme="snow" value={editContent} onChange={setEditContent} className="h-full" />
                   </div>
                 )}
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller Alt Yazısı</label>
+                <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editGalleryCaption} onChange={e => setEditGalleryCaption(e.target.value)} />
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="submit" disabled={editSaving} className="flex-1 bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-60 transition">

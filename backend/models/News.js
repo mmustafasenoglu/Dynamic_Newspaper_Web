@@ -7,6 +7,7 @@ const newsSchema = new mongoose.Schema({
   imageUrl: { type: String, default: '' },
   imageCaption: { type: String, default: '' },
   additionalImages: { type: [String], default: [] },
+  galleryCaption: { type: String, default: '' },
   date: { type: Date, default: Date.now }
 });
 
