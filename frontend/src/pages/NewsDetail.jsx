@@ -61,11 +61,22 @@ const NewsDetail = () => {
             </h1>
             
             <div 
-              className="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-12 [&_*]:!whitespace-normal [&_*]:!break-words
-                prose-p:font-medium prose-p:text-gray-800 prose-p:mb-6 
-                prose-headings:text-gray-900 prose-headings:font-serif prose-headings:mb-4
-                prose-strong:font-bold prose-strong:text-black"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(newsItem.content, { FORBID_TAGS: ['wbr'] }) }}
+              className="text-gray-800 text-lg leading-relaxed mb-12 text-justify
+                [&_p]:mb-6
+                [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:text-left
+                [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-4 [&_h2]:text-left
+                [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-4 [&_h3]:text-left
+                [&_strong]:font-bold [&_strong]:text-black
+                [&_a]:text-blue-600 [&_a]:underline
+                [&_*]:break-words"
+              dangerouslySetInnerHTML={{ 
+                __html: DOMPurify.sanitize(
+                  newsItem.content
+                    .replace(/&nbsp;/g, ' ')
+                    .replace(/\u00A0/g, ' '), 
+                  { FORBID_TAGS: ['wbr'] }
+                ) 
+              }}
             />
 
             {/* Ekstra Görseller (Galeri) */}
