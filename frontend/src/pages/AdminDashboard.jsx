@@ -36,9 +36,12 @@ const AdminDashboard = () => {
   const [editImageUrl, setEditImageUrl] = useState('');
   const [editImageCaption, setEditImageCaption] = useState('');
   const [editCategory, setEditCategory] = useState('Sağlık');
+  const [editAdditionalImages, setEditAdditionalImages] = useState([]);
   const [editGalleryCaption, setEditGalleryCaption] = useState('');
   const [editDate, setEditDate] = useState('');
   const [editSaving, setEditSaving] = useState(false);
+  const [editNewsImageUploading, setEditNewsImageUploading] = useState(false);
+  const [editGalleryUploading, setEditGalleryUploading] = useState(false);
 
   // Profil ayarları
   const [profilePhoto, setProfilePhoto] = useState('');
@@ -205,6 +208,48 @@ const AdminDashboard = () => {
     setEditCategory(item.category || 'Sağlık');
     setEditGalleryCaption(item.galleryCaption || '');
     setEditDate(new Date(item.date).toISOString().split('T')[0]);
+    setEditAdditionalImages(item.additionalImages || []);
+  };
+
+  const handleEditNewsImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setEditNewsImageUploading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await axios.post('/api/upload/news-image', formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      setEditImageUrl(res.data.url);
+    } catch {
+      alert('Ana görsel yüklenemedi.');
+    } finally {
+      setEditNewsImageUploading(false);
+    }
+  };
+
+  const handleEditGalleryUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    if (files.length > 20) {
+      alert('Maksimum 20 görsel yükleyebilirsiniz.');
+      return;
+    }
+    setEditGalleryUploading(true);
+    const formData = new FormData();
+    files.forEach(file => formData.append('images', file));
+    
+    try {
+      const res = await axios.post('/api/upload/news-gallery', formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      setEditAdditionalImages(prev => [...prev, ...res.data.urls.map(url => ({ url, caption: '' }))]);
+    } catch {
+      alert('Galeri görselleri yüklenemedi.');
+    } finally {
+      setEditGalleryUploading(false);
+    }
   };
 
   const handleUpdate = async (e) => {
@@ -212,7 +257,16 @@ const AdminDashboard = () => {
     setEditSaving(true);
     try {
       await axios.put(`/api/news/${editingNews.id}`,
-        { title: editTitle, content: editContent, imageUrl: editImageUrl, imageCaption: editImageCaption, category: editCategory, date: editDate, galleryCaption: editGalleryCaption, additionalImages: editingNews.additionalImages || [] },
+        { 
+          title: editTitle, 
+          content: editContent, 
+          imageUrl: editImageUrl, 
+          imageCaption: editImageCaption, 
+          category: editCategory, 
+          date: editDate, 
+          galleryCaption: editGalleryCaption, 
+          additionalImages: editAdditionalImages 
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEditingNews(null);
@@ -479,8 +533,14 @@ const AdminDashboard = () => {
                 <input type="date" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editDate} onChange={e => setEditDate(e.target.value)} />
               </div>
               <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Ana Görsel URL</label>
-                <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editImageUrl} onChange={e => setEditImageUrl(e.target.value)} />
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ana Görsel (URL veya Yükle)</label>
+                <div className="flex gap-2 items-center">
+                  <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editImageUrl} onChange={e => setEditImageUrl(e.target.value)} />
+                  <label className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded cursor-pointer transition flex-shrink-0 font-bold text-sm flex items-center gap-2">
+                    {editNewsImageUploading ? 'Yükleniyor...' : '⬆️ Yükle'}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleEditNewsImageUpload} />
+                  </label>
+                </div>
                 {editImageUrl && <img src={editImageUrl} alt="Önizleme" className="mt-2 h-24 object-cover rounded shadow" />}
               </div>
               <div>
@@ -493,8 +553,45 @@ const AdminDashboard = () => {
                   <ReactQuill theme="snow" value={editContent} onChange={setEditContent} modules={modules} className="h-full custom-quill" />
                 </div>
               </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller (Maks 20)</label>
+                <label className="block w-full border-2 border-dashed border-gray-300 hover:border-blue-400 bg-gray-50 hover:bg-blue-50 text-center p-4 rounded cursor-pointer transition">
+                  <span className="text-gray-600 font-bold text-sm">
+                    {editGalleryUploading ? 'Yükleniyor...' : '🖼️ Yeni Görseller Ekle'}
+                  </span>
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={handleEditGalleryUpload} />
+                </label>
+                {editAdditionalImages.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {editAdditionalImages.map((img, i) => {
+                      const url = typeof img === 'object' && img !== null ? img.url : img;
+                      const caption = typeof img === 'object' && img !== null ? img.caption : '';
+                      return (
+                        <div key={i} className="relative flex flex-col gap-2 p-2 border rounded bg-white shadow-sm">
+                          <img src={url} alt="Galeri" className="w-full h-24 object-contain bg-gray-100 rounded" />
+                          <button type="button" onClick={() => {
+                            const newImgs = editAdditionalImages.filter((_, idx) => idx !== i);
+                            setEditAdditionalImages(newImgs);
+                          }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-red-600">×</button>
+                          <input 
+                            type="text" 
+                            placeholder="Alt Yazı" 
+                            className="w-full p-1 border rounded text-[10px] focus:outline-none focus:border-blue-500" 
+                            value={caption} 
+                            onChange={e => {
+                              const newImgs = [...editAdditionalImages];
+                              newImgs[i] = { url, caption: e.target.value };
+                              setEditAdditionalImages(newImgs);
+                            }} 
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
               <div className="pt-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller Alt Yazısı</label>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Ekstra Görseller Alt Yazısı (Bilgi/Fotoğrafçı)</label>
                 <input type="text" className="w-full p-2 border rounded focus:outline-none focus:border-blue-500" value={editGalleryCaption} onChange={e => setEditGalleryCaption(e.target.value)} />
               </div>
               <div className="flex gap-3 pt-2">
