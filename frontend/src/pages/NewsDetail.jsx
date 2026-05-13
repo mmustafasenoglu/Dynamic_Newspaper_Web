@@ -65,14 +65,17 @@ const NewsDetail = () => {
           
           <div className="p-6 md:p-12 pt-8">
             <div 
-              className="text-gray-800 text-base md:text-lg leading-relaxed md:leading-loose mb-12 text-justify
-                [&_p]:mb-6
-                [&_h1]:text-2xl md:[&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:text-left
-                [&_h2]:text-xl md:[&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-4 [&_h2]:text-left
-                [&_h3]:text-lg md:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-4 [&_h3]:text-left
-                [&_strong]:font-bold [&_strong]:text-black
-                [&_a]:text-blue-600 [&_a]:underline
-                [&_*]:break-words"
+                className="text-gray-800 text-base md:text-lg leading-relaxed md:leading-loose mb-12 text-justify ql-editor
+                  [&_p]:mb-4
+                  [&_h1]:text-3xl md:[&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6 [&_h1]:text-left
+                  [&_h2]:text-2xl md:[&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mb-4 [&_h2]:mt-5 [&_h2]:text-left
+                  [&_h3]:text-xl md:[&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mb-3 [&_h3]:mt-4 [&_h3]:text-left
+                  [&_strong]:font-bold [&_strong]:text-black
+                  [&_a]:text-blue-600 [&_a]:underline
+                  [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4
+                  [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4
+                  [&_*]:break-words"
+                style={{ padding: 0 }}
               dangerouslySetInnerHTML={{ 
                 __html: DOMPurify.sanitize(
                   newsItem.content
