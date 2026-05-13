@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import useDocumentTitle from '../hooks/useDocumentTitle';
+import ImageCropper from '../components/ImageCropper';
 
 // Fontları Quill'e kaydet
 const Font = Quill.import('formats/font');
@@ -42,6 +43,9 @@ const AdminDashboard = () => {
   const [editSaving, setEditSaving] = useState(false);
   const [editNewsImageUploading, setEditNewsImageUploading] = useState(false);
   const [editGalleryUploading, setEditGalleryUploading] = useState(false);
+
+  // Kırpma state
+  const [croppingImage, setCroppingImage] = useState(null); // { url, index, type: 'new' | 'edit' | 'main' | 'editMain' }
 
   // Profil ayarları
   const [profilePhoto, setProfilePhoto] = useState('');
@@ -252,6 +256,45 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleCropComplete = async (blob) => {
+    const { index, type } = croppingImage;
+    setCroppingImage(null);
+
+    // Kırpılan görseli yükle
+    const formData = new FormData();
+    formData.append('image', blob, 'cropped.jpg');
+    
+    try {
+      if (type === 'new') setGalleryUploading(true);
+      else setEditGalleryUploading(true);
+
+      const res = await axios.post('/api/upload/news-image', formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+
+      const newUrl = res.data.url;
+
+      if (type === 'new') {
+        const newImgs = [...additionalImages];
+        newImgs[index] = { ...newImgs[index], url: newUrl };
+        setAdditionalImages(newImgs);
+      } else if (type === 'edit') {
+        const newImgs = [...editAdditionalImages];
+        newImgs[index] = { ...newImgs[index], url: newUrl };
+        setEditAdditionalImages(newImgs);
+      } else if (type === 'main') {
+        setImageUrl(newUrl);
+      } else if (type === 'editMain') {
+        setEditImageUrl(newUrl);
+      }
+    } catch {
+      alert('Kırpılan görsel yüklenemedi.');
+    } finally {
+      setGalleryUploading(false);
+      setEditGalleryUploading(false);
+    }
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     setEditSaving(true);
@@ -413,7 +456,18 @@ const AdminDashboard = () => {
                     <input type="file" accept="image/*" className="hidden" onChange={handleNewsImageUpload} />
                   </label>
                 </div>
-                {imageUrl && <img src={imageUrl} alt="Önizleme" className="mt-2 h-24 object-cover rounded shadow" />}
+                {imageUrl && (
+                  <div className="relative mt-2 w-fit">
+                    <img src={imageUrl} alt="Önizleme" className="h-24 object-cover rounded shadow" />
+                    <button 
+                      type="button" 
+                      onClick={() => setCroppingImage({ url: imageUrl, type: 'main' })}
+                      className="absolute top-1 left-1 bg-blue-600 text-white rounded px-2 py-0.5 text-[10px] font-bold shadow hover:bg-blue-700"
+                    >
+                      ✂️ Kırp
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Ana Görsel Alt Yazısı (Opsiyonel)</label>
@@ -444,7 +498,16 @@ const AdminDashboard = () => {
                           <button type="button" onClick={() => {
                             const newImgs = additionalImages.filter((_, idx) => idx !== i);
                             setAdditionalImages(newImgs);
-                          }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow hover:bg-red-600">×</button>
+                          }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow hover:bg-red-600 z-10">×</button>
+                          
+                          <button 
+                            type="button" 
+                            onClick={() => setCroppingImage({ url, index: i, type: 'new' })}
+                            className="absolute top-1 left-1 bg-blue-600 text-white rounded px-2 py-0.5 text-[10px] font-bold shadow hover:bg-blue-700 z-10"
+                          >
+                            ✂️ Kırp
+                          </button>
+
                           <input 
                             type="text" 
                             placeholder="Kişi Adı / Alt Yazı" 
@@ -541,7 +604,18 @@ const AdminDashboard = () => {
                     <input type="file" accept="image/*" className="hidden" onChange={handleEditNewsImageUpload} />
                   </label>
                 </div>
-                {editImageUrl && <img src={editImageUrl} alt="Önizleme" className="mt-2 h-24 object-cover rounded shadow" />}
+                {editImageUrl && (
+                  <div className="relative mt-2 w-fit">
+                    <img src={editImageUrl} alt="Önizleme" className="h-24 object-cover rounded shadow" />
+                    <button 
+                      type="button" 
+                      onClick={() => setCroppingImage({ url: editImageUrl, type: 'editMain' })}
+                      className="absolute top-1 left-1 bg-blue-600 text-white rounded px-2 py-0.5 text-[10px] font-bold shadow hover:bg-blue-700"
+                    >
+                      ✂️ Kırp
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Görsel Alt Yazısı</label>
@@ -568,11 +642,20 @@ const AdminDashboard = () => {
                       const caption = typeof img === 'object' && img !== null ? img.caption : '';
                       return (
                         <div key={i} className="relative flex flex-col gap-2 p-2 border rounded bg-white shadow-sm">
-                          <img src={url} alt="Galeri" className="w-full h-24 object-contain bg-gray-100 rounded" />
                           <button type="button" onClick={() => {
                             const newImgs = editAdditionalImages.filter((_, idx) => idx !== i);
                             setEditAdditionalImages(newImgs);
-                          }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-red-600">×</button>
+                          }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-red-600 z-10">×</button>
+                          
+                          <button 
+                            type="button" 
+                            onClick={() => setCroppingImage({ url, index: i, type: 'edit' })}
+                            className="absolute top-1 left-1 bg-blue-600 text-white rounded px-1.5 py-0.5 text-[9px] font-bold shadow hover:bg-blue-700 z-10"
+                          >
+                            ✂️ Kırp
+                          </button>
+
+                          <img src={url} alt="Galeri" className="w-full h-24 object-contain bg-gray-100 rounded" />
                           <input 
                             type="text" 
                             placeholder="Alt Yazı" 
@@ -605,6 +688,15 @@ const AdminDashboard = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* ===== KIRPMA MODALI ===== */}
+      {croppingImage && (
+        <ImageCropper 
+          image={croppingImage.url} 
+          onCropComplete={handleCropComplete} 
+          onCancel={() => setCroppingImage(null)} 
+        />
       )}
     </div>
   );
