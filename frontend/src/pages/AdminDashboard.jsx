@@ -149,7 +149,11 @@ const AdminDashboard = () => {
       );
       setTitle(''); setContent(''); setImageUrl(''); setImageCaption(''); setAdditionalImages([]); setGalleryCaption(''); setCategory('Sağlık'); setDate(new Date().toISOString().split('T')[0]);
       fetchNews();
-    } catch (err) { console.error('Haber eklenemedi.', err); }
+      alert('Haber başarıyla eklendi!');
+    } catch (err) { 
+      console.error('Haber eklenemedi.', err);
+      alert('Haber eklenirken bir hata oluştu: ' + (err.response?.data?.message || err.message));
+    }
   };
 
   const handleNewsImageUpload = async (e) => {
@@ -314,7 +318,11 @@ const AdminDashboard = () => {
       );
       setEditingNews(null);
       fetchNews();
-    } catch (err) { console.error('Güncelleme hatası.', err); }
+      alert('Haber başarıyla güncellendi!');
+    } catch (err) { 
+      console.error('Güncelleme hatası.', err);
+      alert('Güncelleme sırasında bir hata oluştu: ' + (err.response?.data?.message || err.message));
+    }
     finally { setEditSaving(false); }
   };
 
